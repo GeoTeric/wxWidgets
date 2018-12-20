@@ -63,12 +63,14 @@ class wxBrushRefData: public wxGDIRefData
     public:
         wxBrushRefData()
         {
+            m_style = wxBRUSHSTYLE_INVALID;
         }
         
         wxBrushRefData( const wxBrushRefData& data )
         : wxGDIRefData()
         {
             m_qtBrush = data.m_qtBrush;
+            m_style = data.m_style;
         }
         
         bool operator == (const wxBrushRefData& data) const

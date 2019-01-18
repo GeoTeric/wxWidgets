@@ -41,10 +41,15 @@ public:
     virtual void WriteText( const wxString &text ) = 0;
     virtual void MarkDirty() = 0;
     virtual void DiscardEdits() = 0;
-    virtual void blockSignals(bool block) = 0;
     virtual void SetValue( const wxString &value ) = 0;
     virtual void SetSelection( long from, long to ) = 0;
     virtual void SetInsertionPoint(long pos) = 0;
+
+    virtual void QuietSetValue( const wxString & value )
+    {
+        SignalBlock block( GetHandle() );
+        SetValue( value );
+    }
 };
 
 namespace
@@ -190,11 +195,6 @@ public:
         return m_edit->setWindowModified( false );
     }
 
-    virtual void blockSignals(bool block) wxOVERRIDE
-    {
-        m_edit->blockSignals(block);
-    }
-
     virtual void SetValue( const wxString &value ) wxOVERRIDE
     {
         m_edit->setPlainText(wxQtConvertString( value ));
@@ -337,11 +337,6 @@ public:
     virtual void DiscardEdits() wxOVERRIDE
     {
         return m_edit->setModified( false );
-    }
-
-    virtual void blockSignals(bool block) wxOVERRIDE
-    {
-        m_edit->blockSignals(block);
     }
 
     virtual void SetValue( const wxString &value ) wxOVERRIDE
@@ -636,17 +631,10 @@ void wxTextCtrl::DoSetValue( const wxString &text, int flags )
 {
     // do not fire qt signals for certain methods (i.e. ChangeText)
     if ( !(flags & SetValue_SendEvent) )
-    {
-        m_qtEdit->blockSignals(true);
-    }
+        m_qtEdit->QuietSetValue( text );
+    else
+        m_qtEdit->SetValue( text );
 
-    m_qtEdit->SetValue( text );
-
-    // re-enable qt signals
-    if ( !(flags & SetValue_SendEvent) )
-    {
-        m_qtEdit->blockSignals(false);
-    }
     SetInsertionPoint(0);
 }
 

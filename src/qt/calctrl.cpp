@@ -140,9 +140,10 @@ bool wxCalendarCtrl::SetDate(const wxDateTime& date)
             wxQtConvertDate( date ) < m_qtCalendar->minimumDate() )
         return false;
 
-    m_qtCalendar->blockSignals(true);
-    m_qtCalendar->setSelectedDate(wxQtConvertDate(date));
-    m_qtCalendar->blockSignals(false);
+    {
+        SignalBlock block( m_qtCalendar );
+        m_qtCalendar->setSelectedDate( wxQtConvertDate(date) );
+    }
 
     return true;
 }
@@ -161,10 +162,11 @@ bool wxCalendarCtrl::SetDateRange(const wxDateTime& lowerdate,
     if ( !m_qtCalendar )
         return false;
 
-    m_qtCalendar->blockSignals(true);
-    m_qtCalendar->setMinimumDate(wxQtConvertDate(lowerdate));
-    m_qtCalendar->setMaximumDate(wxQtConvertDate(upperdate));
-    m_qtCalendar->blockSignals(false);
+    {
+        SignalBlock block( m_qtCalendar );
+        m_qtCalendar->setMinimumDate( wxQtConvertDate(lowerdate) );
+        m_qtCalendar->setMaximumDate( wxQtConvertDate(upperdate) );
+    }
 
     return true;
 }

@@ -129,31 +129,31 @@ bool wxNotebook::SetPageImage(size_t n, int imageId)
 bool wxNotebook::InsertPage(size_t n, wxWindow *page, const wxString& text,
     bool bSelect, int imageId)
 {
-    // disable firing qt signals until wx structures are filled
-    m_qtTabWidget->blockSignals(true);
-
-    if (imageId != -1)
     {
-        if (HasImageList())
+        // disable firing qt signals until wx structures are filled
+        SignalBlock block( m_qtTabWidget );
+
+        if (imageId != -1)
         {
-            const wxBitmap bitmap = GetImageList()->GetBitmap(imageId);
-            m_qtTabWidget->insertTab( n, page->GetHandle(), QIcon( *bitmap.GetHandle() ), wxQtConvertString( text ));
+            if (HasImageList())
+            {
+                const wxBitmap bitmap = GetImageList()->GetBitmap(imageId);
+                m_qtTabWidget->insertTab( n, page->GetHandle(), QIcon( *bitmap.GetHandle() ), wxQtConvertString( text ));
+            }
+            else
+            {
+                wxFAIL_MSG("invalid notebook imagelist");
+            }
         }
         else
         {
-            wxFAIL_MSG("invalid notebook imagelist");
+            m_qtTabWidget->insertTab( n, page->GetHandle(), wxQtConvertString( text ));
         }
-    }
-    else
-    {
-        m_qtTabWidget->insertTab( n, page->GetHandle(), wxQtConvertString( text ));
+
+        m_pages.insert(m_pages.begin() + n, page);
+        m_images.insert(m_images.begin() + n, imageId);
     }
 
-    m_pages.insert(m_pages.begin() + n, page);
-    m_images.insert(m_images.begin() + n, imageId);
-
-    // reenable firing qt signals as internal wx initialization was completed
-    m_qtTabWidget->blockSignals(false);
 
     if (bSelect && GetPageCount() > 1)
     {

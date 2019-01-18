@@ -77,9 +77,10 @@ bool wxSlider::Create(wxWindow *parent,
 
     m_qtSlider->setInvertedAppearance( style & wxSL_INVERSE );
 
-    m_qtSlider->blockSignals(true);
-    SetRange( minValue, maxValue );
-    m_qtSlider->blockSignals(false);
+    {
+        SignalBlock block( m_qtSlider );
+        SetRange( minValue, maxValue );
+    }
 
 #if 0 // there are not normally ticks for a wxSlider
     // draw ticks marks (default bellow if horizontal, right if vertical):
@@ -104,16 +105,14 @@ int wxSlider::GetValue() const
 
 void wxSlider::SetValue(int value)
 {
-    m_qtSlider->blockSignals(true);
+    SignalBlock block( m_qtSlider );
     m_qtSlider->setValue( value );
-    m_qtSlider->blockSignals(false);
 }
 
 void wxSlider::SetRange(int minValue, int maxValue)
 {
-    m_qtSlider->blockSignals(true);
+    SignalBlock block( m_qtSlider  );
     m_qtSlider->setRange( minValue, maxValue );
-    m_qtSlider->blockSignals(false);
 }
 
 int wxSlider::GetMin() const

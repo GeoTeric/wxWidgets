@@ -623,9 +623,10 @@ void wxWindowQt::SetScrollbar( int orientation, int pos, int thumbvisible, int r
     {
         scrollBar->setRange( 0, range - thumbvisible );
         scrollBar->setPageStep( thumbvisible );
-        scrollBar->blockSignals( true );
-        scrollBar->setValue(pos);
-        scrollBar->blockSignals( false );
+        {
+            SignalBlock block(scrollBar);
+            scrollBar->setValue(pos);
+        }
         scrollBar->show();
 
         if ( HasFlag(wxALWAYS_SHOW_SB) && (range == 0) )

@@ -12,11 +12,29 @@
 
 #include "wx/mousestate.h"
 #include <QtCore/Qt>
+#include <QtCore/QObject>
 
 void wxQtFillMouseButtons( Qt::MouseButtons buttons, wxMouseState *state );
 
 void wxMissingImplementation( const char fileName[], unsigned lineNumber,
     const char feature[] );
+
+
+class SignalBlock
+{
+    QObject *object;
+    bool oldValue;
+    public:
+        SignalBlock( QObject *object ) :
+            object( object )
+        {
+            oldValue = object->blockSignals( true );
+        }
+        ~SignalBlock()
+        {
+            object->blockSignals( oldValue );
+        }
+};
 
 #define wxMISSING_IMPLEMENTATION( feature )\
     wxMissingImplementation( __FILE__, __LINE__, feature )

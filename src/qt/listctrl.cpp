@@ -12,7 +12,6 @@
     #pragma hdrstop
 #endif
 
-#include <QtWidgets/QHeaderView>
 
 #ifndef WX_PRECOMP
     #include "wx/bitmap.h"
@@ -22,6 +21,7 @@
 #include "wx/imaglist.h"
 #include "wx/qt/private/winevent.h"
 
+#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QTreeWidget>
 
 class wxQtTreeWidget : public wxQtEventSignalHandler< QTreeWidget, wxListCtrl >

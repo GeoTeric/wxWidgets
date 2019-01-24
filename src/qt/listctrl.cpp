@@ -545,13 +545,22 @@ wxColour wxListCtrl::GetItemBackgroundColour( long WXUNUSED(item) ) const
     return wxColour();
 }
 
-void wxListCtrl::SetItemFont( long WXUNUSED(item), const wxFont &WXUNUSED(f))
+void wxListCtrl::SetItemFont( long item, const wxFont &f )
 {
+    QTreeWidgetItem *qitem = QtGetItem(item);
+    if ( !qitem )
+        return;
+
+    qitem->setFont(0, f.GetHandle());
 }
 
-wxFont wxListCtrl::GetItemFont( long WXUNUSED(item) ) const
+wxFont wxListCtrl::GetItemFont( long item ) const
 {
-    return wxFont();
+    QTreeWidgetItem *qitem = QtGetItem(item);
+    if ( !qitem )
+        return wxFont();
+
+    return wxFont(qitem->font(0));
 }
 
 int wxListCtrl::GetSelectedItemCount() const

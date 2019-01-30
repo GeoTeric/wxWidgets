@@ -183,7 +183,7 @@ enum wxEllipsizeMode
 // macros
 // ---------------------------------------------------------------------------
 
-#if defined(__WINDOWS__) && wxUSE_WXDIB
+#if defined(__WINDOWS__) && wxUSE_WXDIB && !defined(__WXQT__)
     #define wxHAS_IMAGES_IN_RESOURCES
 #endif
 

@@ -208,22 +208,10 @@ QScrollArea *wxFrame::QtGetScrollBarsContainer() const
 
 void wxFrame::DoGetClientSize(int *width, int *height) const
 {
-    wxWindow::DoGetClientSize(width, height);
-
-    // Adjust the height, taking the status and menu bars into account, if any:
-    if ( height )
-    {
-        if ( wxStatusBar *sb = GetStatusBar() )
-        {
-            *height -= sb->GetSize().y;
-        }
-
-
-        if ( QWidget *qmb = GetQMainWindow()->menuWidget() )
-        {
-            *height -= qmb->geometry().height();
-        }
-    }
+    QWidget *centralWidget = GetQMainWindow()->centralWidget();
+    const QSize size = centralWidget->geometry().size();
+    *width = size.width();
+    *height = size.height();
 }
 
 QMainWindow *wxFrame::GetQMainWindow() const
